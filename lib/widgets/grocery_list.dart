@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/widgets/new_item.dart';
@@ -14,6 +15,7 @@ class GroceryList extends StatefulWidget {
 }
 
 class _GroceryListState extends State<GroceryList> {
+  final String? baseUrl = dotenv.env['baserUrl'];
   List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
   String? _error;
@@ -26,8 +28,7 @@ class _GroceryListState extends State<GroceryList> {
 
   void _loadItem() async {
     try {
-      final url = Uri.https('flutter-grocery-c5d20-default-rtdb.firebaseio.com',
-          'shopping-list.json');
+      final url = Uri.https('$baseUrl', 'shopping-list.json');
       final response = await http.get(url);
       if (response.statusCode >= 400) {
         setState(() {
@@ -111,8 +112,7 @@ class _GroceryListState extends State<GroceryList> {
     setState(() {
       _groceryItems.remove(item);
     });
-    final url = Uri.https('flutter-grocery-c5d20-default-rtdb.firebaseio.com',
-        'shopping-list/${item.id}.json');
+    final url = Uri.https('$baseUrl', 'shopping-list/${item.id}.json');
 
     final response = await http.delete(url);
     if (response.statusCode >= 400) {

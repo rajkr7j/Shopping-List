@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shopping_list/data/categories.dart';
@@ -18,6 +19,7 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
+  final String? baseUrl = dotenv.env['baserUrl'];
   final _formkey = GlobalKey<FormState>();
   // final _formkey = ValueKey();
   var _enteredName = '';
@@ -32,9 +34,7 @@ class _NewItemState extends State<NewItem> {
         setState(() {
           _isSending = true;
         });
-        final url = Uri.https(
-            'flutter-grocery-c5d20-default-rtdb.firebaseio.com',
-            'shopping-list.json');
+        final url = Uri.https('$baseUrl', 'shopping-list.json');
         final response = await http.post(
           url,
           headers: {
